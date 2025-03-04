@@ -1,0 +1,10 @@
+{
+    "extends": "./tsconfig.json", // Base configuration inherit karein
+    "compilerOptions": {
+      "noEmit": false, // Files compile hone den
+      "module": "CommonJS", // CommonJS module system use karein
+      "moduleResolution": "node", // Node.js style module resolution
+      "outDir": "./dist" // Compiled files ka output directory
+    },
+    "include": ["src/scripts/hashPassword.ts"] // Sirf specific file include karein
+  }
