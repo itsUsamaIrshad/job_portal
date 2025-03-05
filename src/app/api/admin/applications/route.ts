@@ -49,7 +49,7 @@ import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 import prisma from '@/lib/prisma';
 
-// ✅ Verify Admin Middleware
+// ✅ Verify Admin 
 export async function verifyAdmin() {
   const token = cookies().get("token")?.value; // Removed await from cookies()
   if (!token) {
