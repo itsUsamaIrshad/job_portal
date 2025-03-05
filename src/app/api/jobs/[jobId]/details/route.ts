@@ -24,7 +24,7 @@ import prisma from '@/lib/prisma';
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
-    const token = cookies().get('token')?.value;
+    const token = (await cookies()).get('token')?.value;
     if (!token) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

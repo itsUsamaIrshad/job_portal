@@ -121,7 +121,34 @@ const verifyAdmin = async () => {
   }
 };
 
-export async function GET(request: Request, { params }: { params: { jobId: string } }) {
+// export async function GET(request: Request, { params }: { params: { jobId: string } }) {
+//   const { error, status } = await verifyAdmin();
+//   if (error) {
+//     return NextResponse.json({ error }, { status });
+//   }
+
+//   try {
+//     const job = await prisma.job.findUnique({
+//       where: { id: parseInt(params.jobId) },
+//     });
+
+//     if (!job) {
+//       return NextResponse.json({ error: 'Job not found' }, { status: 404 });
+//     }
+
+//     return NextResponse.json({ success: true, job });
+//   } catch (error) {
+//     return NextResponse.json({ error: 'Failed to fetch job' }, { status: 500 });
+// //   }
+// }
+
+export async function GET(request: Request, context: { params: { jobId: string } }) {
+  const jobId = context.params.jobId;
+
+  if (!jobId) {
+    return NextResponse.json({ error: 'Invalid job ID' }, { status: 400 });
+  }
+
   const { error, status } = await verifyAdmin();
   if (error) {
     return NextResponse.json({ error }, { status });
@@ -129,7 +156,7 @@ export async function GET(request: Request, { params }: { params: { jobId: strin
 
   try {
     const job = await prisma.job.findUnique({
-      where: { id: parseInt(params.jobId) },
+      where: { id: parseInt(jobId) },
     });
 
     if (!job) {
