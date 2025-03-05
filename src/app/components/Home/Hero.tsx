@@ -20,7 +20,7 @@ const Hero = () => {
       <div className="absolute flex flex-col items-center text-center px-4 w-full">
         <h2 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold max-w-[90%] sm:max-w-[70%]">
           The #1 Job Board for <br />
-          Hiring or Finding Your Next Job
+          Hiring or Finding Your Next Job Usama
         </h2>
 
         {/* Search Bar */}
