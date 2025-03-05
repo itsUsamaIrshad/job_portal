@@ -1,21 +1,22 @@
-'use client'; // Mark this as a Client Component
+'use client'
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Link from 'next/link';
 import axios from 'axios';
 
-// Define the schema for form validation
+
 const schema = z.object({
   email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
 });
 
 export default function LoginPage() {
+  
   const router = useRouter();
   const {
     register,
@@ -27,24 +28,22 @@ export default function LoginPage() {
 
   
 
-const onSubmit = async (data) => {
+const onSubmit = async (data:any ) => {
   try {
     const response = await axios.post("/api/auth/login", data, { withCredentials: true });
 
     if (response.status === 200) {
       const result = response.data;
       toast.success("Login successful!");
-
-      localStorage.setItem("token", result.token);
+       console.log(response.data)
+    
 
       if (result.user.role === "ADMIN") {
         setTimeout(() => router.push("/admin/create"), 2000);
       } else {
         setTimeout(() => router.push("/jobs"), 2000);
       }
-    } else {
-      toast.error("Login failed");
-    }
+    } 
   } catch (error) {
     toast.error( "Something went wrong. Please try again.");
   }

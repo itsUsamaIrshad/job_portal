@@ -28,7 +28,7 @@ export default function CreateJobPage() {
   });
 
   
-  const onSubmit = async (data) => {
+  const onSubmit = async (data :any) => {
     try {
       const response = await axios.post("/api/admin/create", data, {
         headers: { "Content-Type": "application/json" },

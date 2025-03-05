@@ -5,6 +5,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
+
 const JobsList = () => {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,7 +53,7 @@ const JobsList = () => {
 
   return (
     <>
-    
+ 
       <div className="bg-gradient-to-r from-purple-600 to-indigo-600 min-h-screen p-6">
         <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">Job Listings</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

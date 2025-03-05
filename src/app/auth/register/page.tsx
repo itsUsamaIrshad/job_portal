@@ -10,36 +10,38 @@ import axios from 'axios';
 
 
 const schema = z.object({
-  name: z.string().min(1, 'Name is required'),
+  name: z.string().min(3, 'Name is required'),
   email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
 });
 
 export default function RegisterPage() {
+  
   const router = useRouter();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm({
+
+  const { register,handleSubmit,formState: { errors, isSubmitting },} = useForm({
     resolver: zodResolver(schema),
   });
 
   
   const onSubmit = async (data: any) => {
     try {
+
+      console.log(data)
+    
       const response = await axios.post('/api/auth/register', data, {
         headers: { 'Content-Type': 'application/json' },
-        withCredentials: true, // ✅ Cookies ko include karne ke liye
+        withCredentials: true, 
       });
 
       if (response.status === 200) {
-        toast.success('Registration successful! Redirecting to login...');
+        toast.success('Registration successful!');
         setTimeout(() => {
           router.push('/auth/login');
-        }, 2000);
+        }, 1000);
       }
-    } catch (error: any) {
+    } 
+    catch (error: any) {
       toast.error(error.response?.data?.error || 'Registration failed');
     }
   };
@@ -61,7 +63,7 @@ export default function RegisterPage() {
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {errors.name && (
-              <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>
+              <span className="text-sm text-red-500 mt-1">{errors.name.message}</span>
             )}
           </div>
 
@@ -93,7 +95,7 @@ export default function RegisterPage() {
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             {errors.password && (
-              <p className="text-sm text-red-500 mt-1">{errors.password.message}</p>
+              <span className="text-sm text-red-500 mt-1">{errors.password.message}</span>
             )}
           </div>
 

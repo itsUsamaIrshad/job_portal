@@ -4,8 +4,8 @@ import jwt from 'jsonwebtoken';
 import prisma from '@/lib/prisma';
 
 // ✅ Verify Admin Middleware
-const verifyAdmin = () => {
-  const token = cookies().get('token')?.value;
+export async function verifyAdmin() {
+  const token = (await cookies()).get("token")?.value;
   if (!token) {
     return { error: 'Unauthorized', status: 401 };
   }
@@ -19,11 +19,12 @@ const verifyAdmin = () => {
   } catch (error) {
     return { error: 'Invalid token', status: 401 };
   }
-};
+}
 
 // ✅ Fetch All Applications (GET /api/admin/applications)
 export async function GET() {
-  const { error, status } = verifyAdmin();
+  // **Admin verification**
+  const { error, status, decoded } = await verifyAdmin();
   if (error) {
     return NextResponse.json({ error }, { status });
   }
@@ -42,4 +43,3 @@ export async function GET() {
     return NextResponse.json({ error: 'Failed to fetch applications' }, { status: 500 });
   }
 }
-

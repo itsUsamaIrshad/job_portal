@@ -1,45 +1,37 @@
-import React from 'react';
-import { cookies } from 'next/headers';
-import jwt from 'jsonwebtoken';
-import { redirect } from 'next/navigation';
+"use client";
+import React, { useEffect, useState } from "react";
 
+export default function AdminApplicationsPage() {
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-async function getApplications() {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  const res = await fetch(`${apiUrl}/api/admin/applications`, {
-    headers: {
-      Cookie: cookies().toString(),
-    },
-  });
+  useEffect(() => {
+    async function fetchApplications() {
+      try {
+        const res = await fetch("/api/admin/applications", {
+          credentials: "include",
+        });
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch applications');
-  }
+        if (!res.ok) {
+          throw new Error("Failed to fetch applications");
+        }
 
-  return res.json();
-}
-
-const verifyAdmin = () => {
-  const token = cookies().get('token')?.value;
-  if (!token) {
-    redirect('/login'); 
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { role: string };
-    if (decoded.role !== 'ADMIN') {
-      redirect('/'); 
+        const data = await res.json();
+        setApplications(data.applications);
+        console.log(data.applications)
+      } catch (err) {
+        // setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     }
-    return decoded;
-  } catch (error) {
-    redirect('/login'); 
-  }
-};
 
-export default async function AdminApplicationsPage() {
-  verifyAdmin(); 
+    fetchApplications();
+  }, []);
 
-  const { applications } = await getApplications();
+  if (loading) return <p>Loading applications...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="p-4">
@@ -56,18 +48,18 @@ export default async function AdminApplicationsPage() {
           </tr>
         </thead>
         <tbody>
-          {applications.map((application) => (
-            <tr key={application.id}>
-              <td className="py-2 px-4 border">{application.job.title}</td>
-              <td className="py-2 px-4 border">{application.user.name}</td>
-              <td className="py-2 px-4 border">{application.user.email}</td>
-              <td className="py-2 px-4 border">{application.cover_letter}</td>
+          {applications.map((app , i) => (
+            <tr key={i}>
+              <td className="py-2 px-4 border">{app.job.title}</td>
+              <td className="py-2 px-4 border">{app.user.name}</td>
+              <td className="py-2 px-4 border">{app.user.email}</td>
+              <td className="py-2 px-4 border">{app.cover_letter}</td>
               <td className="py-2 px-4 border">
-                <a href={application.resume} target="_blank" rel="noopener noreferrer">
+                <a href={app.resume} target="_blank" rel="noopener noreferrer">
                   View Resume
                 </a>
               </td>
-              <td className="py-2 px-4 border">{application.status}</td>
+              <td className="py-2 px-4 border">{app.status}</td>
             </tr>
           ))}
         </tbody>

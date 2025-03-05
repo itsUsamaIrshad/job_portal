@@ -23,18 +23,16 @@ export async function POST(req: Request) {
     // Generate JWT
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET!,
-      { expiresIn: '1h' }
-    );
+      process.env.JWT_SECRET! , { expiresIn: "1h" });
 
     
-    (await cookies()).set('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 3600, 
-      path: '/',
-    });
-
+      (await cookies()).set('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 604800, 
+        path: '/',
+      });
+      
     return NextResponse.json({ message: 'Login successful', user });
   } catch (error) {
     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });

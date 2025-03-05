@@ -3,9 +3,8 @@ import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 import prisma from '@/lib/prisma';
 
-// ✅ Verify Admin Middleware
-const verifyAdmin = () => {
-  const token = cookies().get('token')?.value;
+const verifyAdmin = async() => {
+  const token = (await cookies()).get("token")?.value;
   if (!token) {
     return { error: 'Unauthorized', status: 401 };
   }
@@ -21,7 +20,7 @@ const verifyAdmin = () => {
   }
 };
 
-// ✅ Fetch All Jobs (GET /api/admin/jobs)
+
 export async function GET() {
   const { error, status } = verifyAdmin();
   if (error) {
@@ -36,7 +35,7 @@ export async function GET() {
   }
 }
 
-// ✅ Create a Job (POST /api/admin/jobs)
+
 export async function POST(req: Request) {
   const { error, status, decoded } = verifyAdmin();
   if (error) {
@@ -53,7 +52,7 @@ export async function POST(req: Request) {
         category,
         location,
         salary,
-        postedById: decoded?.id, // Associate the job with the logged-in admin
+        postedById: decoded?.id, 
       },
     });
 
@@ -63,7 +62,7 @@ export async function POST(req: Request) {
   }
 }
 
-// ✅ Update a Job (PUT /api/admin/jobs)
+
 export async function PUT(req: Request) {
   const { error, status } = verifyAdmin();
   if (error) {
@@ -82,7 +81,7 @@ export async function PUT(req: Request) {
   }
 }
 
-// ✅ Delete a Job (DELETE /api/admin/jobs)
+
 export async function DELETE(req: Request) {
   const { error, status } = verifyAdmin();
   if (error) {
