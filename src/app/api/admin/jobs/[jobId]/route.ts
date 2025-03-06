@@ -3,13 +3,20 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(
-  request: NextRequest, // ✅ Use NextRequest instead of Request
-  { params }: { params: { jobId: string } } // ✅ Extract params from the second argument
-) {
-  const jobId = parseInt(params.jobId, 10); // ✅ Convert to integer
+export async function GET(request: NextRequest) {
+  // Extract jobId from the URL
+  const jobId = request.nextUrl.pathname.split("/").pop();
 
-  if (isNaN(jobId)) {
+  if (!jobId) {
+    return NextResponse.json(
+      { success: false, error: "Job ID is required" },
+      { status: 400 }
+    );
+  }
+
+  const parsedJobId = parseInt(jobId, 10);
+
+  if (isNaN(parsedJobId)) {
     return NextResponse.json(
       { success: false, error: "Job ID must be a valid number" },
       { status: 400 }
@@ -18,7 +25,7 @@ export async function GET(
 
   try {
     const job = await prisma.job.findUnique({
-      where: { id: jobId }, // Ensure `id` matches Prisma schema
+      where: { id: parsedJobId }, // Ensure `id` matches Prisma schema
     });
 
     if (!job) {
