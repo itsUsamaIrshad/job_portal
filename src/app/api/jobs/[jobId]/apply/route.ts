@@ -58,24 +58,27 @@
 
 
 
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 import prisma from '@/lib/prisma';
 
-export async function POST(req: Request, context: { params: { jobId: string } }) {
+export async function POST(request: NextRequest) {
   try {
-    const { jobId } = context.params; // ✅ Correct way to access jobId
+    // Extract jobId from the URL
+    const jobId = request.nextUrl.pathname.split('/').pop();
 
-    console.log('Job ID from params:', jobId);
+    if (!jobId) {
+      return NextResponse.json({ error: 'Job ID is required' }, { status: 400 });
+    }
 
-    // Convert jobId to integer
-    const parsedJobId = parseInt(jobId);
+    // Parse jobId from params
+    const parsedJobId = parseInt(jobId, 10);
     if (isNaN(parsedJobId)) {
       return NextResponse.json({ error: 'Invalid job ID' }, { status: 400 });
     }
 
     // Parse form data
-    const formData = await req.formData();
+    const formData = await request.formData();
     const name = formData.get('name') as string;
     const cover_letter = formData.get('cover_letter') as string;
     const resumeFile = formData.get('resume') as File;
@@ -85,7 +88,10 @@ export async function POST(req: Request, context: { params: { jobId: string } })
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
     }
 
+    // Debug: Log the file
     console.log('Received file:', resumeFile);
+
+    // Debug: Log the file size
     console.log('File size:', resumeFile.size);
 
     if (resumeFile.size === 0) {
@@ -94,16 +100,16 @@ export async function POST(req: Request, context: { params: { jobId: string } })
 
     // Upload file to Cloudinary
     const cloudinaryResult = await uploadToCloudinary(resumeFile);
-    const resumeUrl = (cloudinaryResult as any).secure_url;
+    const resumeUrl = (cloudinaryResult as any).secure_url; // Get the file URL
 
-    // Save to database
+    // Save the application to the database
     const application = await prisma.application.create({
       data: {
         name,
         cover_letter,
-        resume: resumeUrl,
-        jobId: parsedJobId, // ✅ Use parsed jobId
-        userId: 1, // 🔹 Replace with the logged-in user's ID
+        resume: resumeUrl, // Store the Cloudinary URL
+        jobId: parsedJobId, // Associate with the job (use `jobId` as per your schema)
+        userId: 1, // Replace with the logged-in user's ID (use `userId` as per your schema)
       },
     });
 
