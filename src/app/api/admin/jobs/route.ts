@@ -21,19 +21,19 @@
 // // };
 
 
-// // export async function GET() {
-// //   const { error, status } = verifyAdmin();
-// //   if (error) {
-// //     return NextResponse.json({ error }, { status });
-// //   }
+// export async function GET() {
+//   const { error, status } = verifyAdmin();
+//   if (error) {
+//     return NextResponse.json({ error }, { status });
+//   }
 
-// //   try {
-// //     const jobs = await prisma.job.findMany();
-// //     return NextResponse.json({ success: true, jobs });
-// //   } catch (error) {
-// //     return NextResponse.json({ error: 'Failed to fetch jobs' }, { status: 500 });
-// //   }
-// // }
+//   try {
+//     const jobs = await prisma.job.findMany();
+//     return NextResponse.json({ success: true, jobs });
+//   } catch (error) {
+//     return NextResponse.json({ error: 'Failed to fetch jobs' }, { status: 500 });
+//   }
+// }
 
 
 // // export async function POST(req: Request) {
@@ -250,29 +250,46 @@ const verifyAdmin = async () => {
   }
 };
 
-export async function GET(
-  request: Request,
-  { params }: { params: { jobId: string } }
-) {
-  const { error, status } = await verifyAdmin();
-  if (error) {
-    return NextResponse.json({ error }, { status });
-  }
+
+export async function GET() {
+  // const { error, status } = verifyAdmin();
+  // if (error) {
+  //   return NextResponse.json({ error }, { status });
+  // }
 
   try {
-    const job = await prisma.job.findUnique({
-      where: { id: parseInt(params.jobId) },
-    });
-
-    if (!job) {
-      return NextResponse.json({ error: 'Job not found' }, { status: 404 });
-    }
-
-    return NextResponse.json({ success: true, job });
+    const jobs = await prisma.job.findMany();
+    return NextResponse.json({ success: true, jobs });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch job' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch jobs' }, { status: 500 });
   }
 }
+
+// export async function GET(
+//   request: Request,
+//   { params }: { params: { jobId: string } }
+// ) {
+//   // const { error, status } = await verifyAdmin();
+//   // if (error) {
+//   //   return NextResponse.json({ error }, { status });
+//   // }
+//   const jobs = await prisma.job.findMany();
+// // //     return NextResponse.json({ success: true, jobs });
+
+//   try {
+//     const job = await prisma.job.findUnique({
+//       where: { id: parseInt(params.jobId) },
+//     });
+
+//     if (!job) {
+//       return NextResponse.json({ error: 'Job not found' }, { status: 404 });
+//     }
+
+//     return NextResponse.json({ success: true, job });
+//   } catch (error) {
+//     return NextResponse.json({ error: 'Failed to fetch job' }, { status: 500 });
+//   }
+// }
 
 export async function POST(req: Request) {
   const { error, status, decoded } = await verifyAdmin();
