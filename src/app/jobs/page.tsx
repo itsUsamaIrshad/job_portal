@@ -14,7 +14,7 @@ const JobsList = () => {
   const fetchJobs = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/api/jobs');
+      const response = await axios.get('/api/admin/jobs');
       if (response.data.success) {
         setJobs(response.data.jobs);
       } else {
