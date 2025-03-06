@@ -35,14 +35,32 @@
 //   }
 // }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { NextRequest } from "next/server";
 
 const prisma = new PrismaClient();
 
-export async function GET(request: NextRequest, context: { params: { jobId: string } }) {
-  const jobId = parseInt(context.params.jobId, 10); // Convert jobId to an integer
+export async function GET(
+  request: Request,
+  { params }: { params: { jobId: string } }
+) {
+  const jobId = parseInt(params.jobId, 10); // Convert jobId to an integer
 
   if (isNaN(jobId)) {
     return NextResponse.json(
