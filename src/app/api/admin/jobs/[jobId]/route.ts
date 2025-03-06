@@ -3,8 +3,11 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(request: Request, { params }: { params: { jobId: string } }) {
-  const jobId = parseInt(params.jobId, 10); // Convert jobId to an integer
+export async function GET(
+  request: Request,
+  { params }: { params: { jobId: string } } // ✅ jobId should be a string
+) {
+  const jobId = parseInt(params.jobId, 10); // ✅ Convert to integer
 
   if (isNaN(jobId)) {
     return NextResponse.json(
@@ -15,7 +18,7 @@ export async function GET(request: Request, { params }: { params: { jobId: strin
 
   try {
     const job = await prisma.job.findUnique({
-      where: { id: jobId }, // Ensure `id` matches the field name in your Prisma schema
+      where: { id: jobId }, // Ensure `id` matches Prisma schema
     });
 
     if (!job) {
@@ -34,12 +37,6 @@ export async function GET(request: Request, { params }: { params: { jobId: strin
     );
   }
 }
-
-
-
-
-
-
 
 
 
