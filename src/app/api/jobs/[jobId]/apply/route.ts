@@ -64,7 +64,7 @@ import prisma from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {
-    // Extract jobId from the URL
+    // Extract jobId from the UR
     const jobId = request.nextUrl.pathname.split('/').pop();
 
     if (!jobId) {
